@@ -1,3 +1,3 @@
-ReactDOMRe.renderToElementWithId(<Component1 message="Hello!" />, "main");
+ReactDOMRe.renderToElementWithId(<Main message="Hello!" />, "main");
 
-Js.log("hallo");
+Js.log("daag");

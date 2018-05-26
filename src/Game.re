@@ -2,9 +2,7 @@
 open Types;
 
 type action =
-  | ClickField(int, int);
-
-let component = ReasonReact.reducerComponent("Game");
+  | ToggleField(int, int);
 
 let initialState = {
   grid: [
@@ -22,11 +20,37 @@ let initialState = {
   gameState: Paused,
 };
 
-let make = _children => {
+let toggleField = (rowI: int, colI: int, grid: grid) : grid =>
+  grid
+  |> List.mapi((rowIndex: int, row: row) =>
+       row
+       |> List.mapi((colIndex: int, value: field) =>
+            colI === colIndex && rowI === rowIndex ?
+              switch (value) {
+              | Dead => Alive
+              | Alive => Dead
+              } :
+              value
+          )
+     );
+
+let component = ReasonReact.reducerComponent("Game");
+
+let make = _ => {
   ...component,
   initialState: () => initialState,
+  didMount: (_) => (),
   reducer: (action: action, state: state) =>
-    ReasonReact.Update(initialState),
-  render: ({state}) =>
-    <div className="game"> <Grid grid=state.grid /> </div>,
+    switch (action) {
+    | ToggleField((row: int), (col: int)) =>
+      let grid = toggleField(row, col, state.grid);
+      ReasonReact.Update({grid, gameState: state.gameState});
+    },
+  render: ({state, send}) =>
+    <div className="game">
+      <Grid
+        onToggle=((row, col) => send(ToggleField(row, col)))
+        grid=state.grid
+      />
+    </div>,
 };

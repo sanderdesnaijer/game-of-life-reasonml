@@ -4,7 +4,7 @@ open Utils;
 
 let component = ReasonReact.statelessComponent("Row");
 
-let make = (~index, ~row, _children) => {
+let make = (~index, ~row, ~onToggle, _children) => {
   ...component,
   render: __children =>
     <div className="row">
@@ -12,16 +12,7 @@ let make = (~index, ~row, _children) => {
         row
         |> List.mapi((col: int, value: field) => {
              let key = string_of_int(index) ++ string_of_int(col);
-             <Field
-               key
-               value
-               row=index
-               col
-               onClick=(
-                 (a, v) =>
-                   Js.log(string_of_int(a) ++ " " ++ string_of_int(v))
-               )
-             />;
+             <Field key value row=index col onToggle />;
            })
         |> Array.of_list
         |> ReasonReact.arrayToElement

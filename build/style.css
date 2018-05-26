@@ -1,3 +1,22 @@
 body {
-  background: red;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.field {
+  width: 50px;
+  height: 50px;
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.alive {
+  background-color: #000;
 }

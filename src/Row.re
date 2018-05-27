@@ -1,7 +1,5 @@
 open Types;
 
-open Utils;
-
 let component = ReasonReact.statelessComponent("Row");
 
 let make = (~index, ~row, ~onToggle, _children) => {
@@ -15,7 +13,7 @@ let make = (~index, ~row, ~onToggle, _children) => {
              <Field key value row=index col onToggle />;
            })
         |> Array.of_list
-        |> ReasonReact.arrayToElement
+        |> ReasonReact.array
       )
     </div>,
 };

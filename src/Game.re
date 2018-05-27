@@ -1,13 +1,15 @@
 /* This is the basic component. */
 open Types;
+open Utils;
 
 type action =
-  | ToggleField(int, int);
+  | ToggleField(int, int)
+  | NextFrame;
 
 let initialState = {
   grid: [
     [Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead],
-    [Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead],
+    [Alive, Alive, Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead],
     [Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead],
     [Dead, Dead, Dead, Alive, Alive, Dead, Dead, Dead, Dead, Dead],
     [Dead, Dead, Dead, Dead, Alive, Dead, Dead, Dead, Dead, Dead],
@@ -25,12 +27,12 @@ let toggleField = (rowI: int, colI: int, grid: grid) : grid =>
   |> List.mapi((rowIndex: int, row: row) =>
        row
        |> List.mapi((colIndex: int, value: field) =>
-            colI === colIndex && rowI === rowIndex ?
+            colI === colIndex && rowI === rowIndex ? {
               switch (value) {
-              | Dead => Alive
-              | Alive => Dead
-              } :
-              value
+                | Dead => Alive
+                | Alive => Dead
+            }
+            } : value
           )
      );
 
@@ -45,6 +47,8 @@ let make = _ => {
     | ToggleField((row: int), (col: int)) =>
       let grid = toggleField(row, col, state.grid);
       ReasonReact.Update({grid, gameState: state.gameState});
+    | NextFrame => 
+        ReasonReact.Update({grid: calcNextState(state.grid), gameState: state.gameState});
     },
   render: ({state, send}) =>
     <div className="game">
@@ -52,5 +56,7 @@ let make = _ => {
         onToggle=((row, col) => send(ToggleField(row, col)))
         grid=state.grid
       />
+      <button onClick=(_ => send(NextFrame))>(toString("knop"))</button>
+
     </div>,
 };

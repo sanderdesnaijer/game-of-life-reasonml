@@ -13,4 +13,5 @@ type gameState =
 type state = {
   grid,
   gameState,
+  intervalId: ref(option(Js.Global.intervalId)),
 };

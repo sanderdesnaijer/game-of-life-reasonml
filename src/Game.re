@@ -1,10 +1,11 @@
 open Types;
+
 open Utils;
 
 type action =
   | ToggleField(int, int)
   | NextFrame
-  | TogglePlay
+  | TogglePlay;
 
 let initialState = {
   grid: [
@@ -22,67 +23,63 @@ let initialState = {
   intervalId: ref(None),
 };
 
-let speed:int = 200;
+let speed: int = 200;
 
 let toggleField = (rowI: int, colI: int, grid: grid) : grid =>
   grid
   |> List.mapi((rowIndex: int, row: row) =>
        row
        |> List.mapi((colIndex: int, value: field) =>
-            colI === colIndex && rowI === rowIndex ? {
+            colI === colIndex && rowI === rowIndex ?
               switch (value) {
-                | Dead => Alive
-                | Alive => Dead
-            }
-            } : value
+              | Dead => Alive
+              | Alive => Dead
+              } :
+              value
           )
      );
 
 let component = ReasonReact.reducerComponent("Game");
-
 let make = _ => {
-  ...component,
-  initialState: () => initialState,
-  didMount: ({state, send}) => {
-      switch(state.gameState) {
-        | Playing => 
-            state.intervalId := Some(Js.Global.setInterval(() => send(NextFrame), speed))
-        | Paused => ()
-      }
-  },
-  reducer: (action: action, state: state,) =>
-    switch (action) {
-        | ToggleField((row: int), (col: int)) =>
-        ReasonReact.Update({...state, grid: toggleField(row, col, state.grid)});
-        | NextFrame => 
-            ReasonReact.Update({...state, grid: calcNextState(state.grid)});
-        | TogglePlay => {
-            switch(state.gameState){
-            | Playing => {            
-                switch (state.intervalId^) {
-                    | Some(id) => {
-                        Js.Global.clearInterval(id);                
-                        ReasonReact.Update({...state, gameState: Paused});
-                    };
-                    | None => ReasonReact.Update(initialState);
-                }            
-            }
-            | Paused => ReasonReact.UpdateWithSideEffects({...state, gameState: Playing } , {
-                (self => {                    
-                    state.intervalId := Some(Js.Global.setInterval(() => self.send(NextFrame), speed));
-                })
-            });
-            }
-        }    
-    },
-  render: ({state, send}) =>
-    <div className="game">
-      <Grid
-        onToggle=((row, col) => send(ToggleField(row, col)))
-        grid=state.grid
-      />
-      <button onClick=(_ => send(TogglePlay))>
-        ((state.gameState === Playing ? "Pause" : "Play") |> toString)
-    </button>        
-    </div>,
-};
+     ...component,
+     initialState: () => initialState,
+     didMount: ({state, send}) => {
+         switch(state.gameState) {
+           | Playing =>
+               state.intervalId := Some(Js.Global.setInterval(() => send(NextFrame), speed))
+           | Paused => ()
+         }
+     },
+     reducer: (action: action, state: state,) =>
+       switch (action) {
+           | ToggleField((row: int), (col: int)) =>
+                ReasonReact.Update({...state, grid: toggleField(row, col, state.grid)});
+           | NextFrame =>
+                ReasonReact.Update({...state, grid: calcNextState(state.grid)});
+           | TogglePlay => {
+               switch(state.gameState){
+               | Playing => {
+                   switch (state.intervalId^) {
+                       | Some(id) => ReasonReact.UpdateWithSideEffects({...state, gameState: Paused}, (_) => Js.Global.clearInterval(id));
+                       | None => ReasonReact.Update(initialState);
+                   }
+               }
+               | Paused => ReasonReact.UpdateWithSideEffects({...state, gameState: Playing } , {
+                   (self => {
+                       state.intervalId := Some(Js.Global.setInterval(() => self.send(NextFrame), speed));
+                   })
+               });
+               }
+           }
+       },
+     render: ({state, send}) =>
+       <div className="game">
+         <Grid
+           onToggle=((row, col) => send(ToggleField(row, col)))
+           grid=state.grid
+         />
+         <button onClick=(_ => send(TogglePlay))>
+           ((state.gameState === Playing ? "Pause" : "Play") |> toString)
+       </button>
+       </div>,
+   };

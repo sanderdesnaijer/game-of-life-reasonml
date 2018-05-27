@@ -5,7 +5,8 @@ open Utils;
 type action =
   | ToggleField(int, int)
   | NextFrame
-  | TogglePlay;
+  | TogglePlay
+  | Clear;
 
 let initialState = {
   grid: [
@@ -39,6 +40,18 @@ let toggleField = (rowI: int, colI: int, grid: grid) : grid =>
           )
      );
 
+let clearGrid = (grid: grid) : grid =>
+    grid
+    |> List.map((row: row) =>
+        row
+        |> List.map((value: field) =>
+            switch (value) {
+            | Dead => Dead
+            | Alive => Dead
+            }
+        )
+    );     
+
 let component = ReasonReact.reducerComponent("Game");
 let make = _ => {
      ...component,
@@ -71,6 +84,7 @@ let make = _ => {
                });
                }
            }
+           | Clear => ReasonReact.Update({...state, grid: clearGrid(state.grid)})
        },
      render: ({state, send}) =>
        <div className="game">
@@ -80,6 +94,9 @@ let make = _ => {
          />
          <button onClick=(_ => send(TogglePlay))>
            ((state.gameState === Playing ? "Pause" : "Play") |> toString)
-       </button>
+         </button>
+         <button onClick=(_ => send(Clear))>
+            (("Reset") |> toString)
+         </button>
        </div>,
    };

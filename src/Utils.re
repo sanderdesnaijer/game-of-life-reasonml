@@ -16,20 +16,21 @@ let isAlive = (totalNeighbours: int, field: field) : field =>
 
 /* check future index, and handle if out of bounds   */
 let getNextCell = (index: int, totalFields: int) : int => {
-  let min = index == (-1);
+  let min = index === -1;
   let max = index > totalFields - 1;
-  if (min || max) {
-    if (min) {
-      totalFields - 1;
-    } else {
-      index - totalFields;
-    };
-  } else {
+  
+  if (min) {
+    totalFields - 1;
+  } 
+  else if(max){
+    index - totalFields;
+  }
+  else {
     index;
   };
 };
 
-let calcNeighbour = (row, col, totalRows, totalCols, grid: grid) : int => {
+let calcNeighbour = (row:int, col:int, totalRows:int, totalCols:int, grid: grid) : int => {
   let nextRow = getNextCell(row, totalRows);
   let nextCol = getNextCell(col, totalCols);
   List.nth(List.nth(grid, nextRow), nextCol) === Dead ? 0 : 1;
@@ -42,80 +43,37 @@ let calcNextState = (grid: grid) =>
        |> List.mapi((colIndex: int, value: field) => {
             let totalRows = List.length(grid);
             let totalCols = List.length(row);
-            /* neighbours */
-            let topLeft =
-              calcNeighbour(
-                rowIndex - 1,
-                colIndex - 1,
+            let neighbours = [
+              /* topLeft */
+              [rowIndex -1, colIndex -1],
+              /* topCenter */
+              [rowIndex -1, colIndex],
+              /* topRight */
+              [rowIndex -1, colIndex + 1],
+              /* centerLeft */
+              [rowIndex, colIndex - 1],
+              /* centerRight */
+              [rowIndex, colIndex + 1], 
+              /* bottomLeft */
+              [rowIndex + 1, colIndex - 1], 
+              /* bottomCenter */
+              [rowIndex + 1, colIndex], 
+              /* bottomRight */
+              [rowIndex + 1, colIndex + 1],
+            ];
+
+            /* TODO: write with reduce*/
+            let totalNeighbours = ref(0);
+            let t = neighbours |> List.map(neighbour => {                
+              totalNeighbours := totalNeighbours^ + calcNeighbour(
+                List.nth(neighbour, 0),
+                List.nth(neighbour, 1),
                 totalRows,
                 totalCols,
                 grid,
               );
-            let topCenter =
-              calcNeighbour(
-                rowIndex - 1,
-                colIndex,
-                totalRows,
-                totalCols,
-                grid,
-              );
-            let topRight =
-              calcNeighbour(
-                rowIndex - 1,
-                colIndex + 1,
-                totalRows,
-                totalCols,
-                grid,
-              );
-            let centerLeft =
-              calcNeighbour(
-                rowIndex,
-                colIndex - 1,
-                totalRows,
-                totalCols,
-                grid,
-              );
-            let centerRight =
-              calcNeighbour(
-                rowIndex,
-                colIndex + 1,
-                totalRows,
-                totalCols,
-                grid,
-              );
-            let bottomLeft =
-              calcNeighbour(
-                rowIndex + 1,
-                colIndex - 1,
-                totalRows,
-                totalCols,
-                grid,
-              );
-            let bottomCenter =
-              calcNeighbour(
-                rowIndex + 1,
-                colIndex,
-                totalRows,
-                totalCols,
-                grid,
-              );
-            let bottomRight =
-              calcNeighbour(
-                rowIndex + 1,
-                colIndex + 1,
-                totalRows,
-                totalCols,
-                grid,
-              );
-            let totalNeighbours =
-              topLeft
-              + topCenter
-              + topRight
-              + centerLeft
-              + centerRight
-              + bottomLeft
-              + bottomCenter
-              + bottomRight;
-            isAlive(totalNeighbours, value);
+            });
+                   
+            isAlive(totalNeighbours^, value);
           })
      );

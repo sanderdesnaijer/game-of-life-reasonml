@@ -28,11 +28,11 @@ let getNextCell = (index: int, totalFields: int) : int => {
   };
 };
 
-let getNeighbour = (row: int, col: int, grid: grid) : int => {
+/* get value of neighbour cell */
+let getNeighbourValue = (row: int, col: int, grid: grid) : int => {
   let nextRow = getNextCell(row, List.length(grid));
   let nextCol = getNextCell(col, List.length(List.nth(grid, 0)));
   let neighbour = List.nth(List.nth(grid, nextRow), nextCol);
-  /* convert field value to integer to count it */
   switch (neighbour) {
   | Dead => 0
   | _ => 1
@@ -66,7 +66,7 @@ let calcNextState = (grid: grid) =>
               neighbours
               |> Js.Array.reduce(
                    (total, list) =>
-                     total + getNeighbour(list[0], list[1], grid),
+                     total + getNeighbourValue(list[0], list[1], grid),
                    0,
                  );
             isAlive(totalNeighbours, value);

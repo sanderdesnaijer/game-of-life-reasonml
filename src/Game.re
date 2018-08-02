@@ -103,7 +103,7 @@ let make = (_) => {
         ((state.gameState === Playing ? "Pause" : "Play") |> Utils.toString)
       </button>
       <button onClick=((_) => send(Clear))>
-        (Utils.toString("Reset"))
+        ("Reset" |> Utils.toString)
       </button>
     </div>,
 };

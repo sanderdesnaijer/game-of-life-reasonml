@@ -15,12 +15,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "reason-react": ">=0.4.0"
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "reason-react": "^0.4.2"
   },
   "devDependencies": {
-    "bs-platform": "^3.1.4",
+    "bs-platform": "^4.0.2",
     "webpack": "^4.16.3",
     "webpack-cli": "^2.1.5"
   }

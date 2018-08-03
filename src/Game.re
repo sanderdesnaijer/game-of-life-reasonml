@@ -65,7 +65,22 @@ let make = (_) => {
   reducer: (action: action, state: state) =>
     switch (action) {
     | ToggleField((row: int), (col: int)) =>
-      ReasonReact.Update({...state, grid: toggleField(row, col, state.grid)})
+      switch(state.gameState) {
+      | Playing => {
+        switch (state.intervalId^) {
+          | Some(id) =>
+            ReasonReact.UpdateWithSideEffects(
+              {...state, 
+                gameState: Paused,
+                grid: toggleField(row, col, state.grid)
+              },
+              ((_) => Js.Global.clearInterval(id)),
+            )
+          | None => ReasonReact.Update(initialState)
+          }
+      }
+      | Paused => ReasonReact.Update({...state, grid: toggleField(row, col, state.grid)})
+      }
     | NextFrame =>
       ReasonReact.Update({...state, grid: Utils.calcNextState(state.grid)})
     | TogglePlay =>

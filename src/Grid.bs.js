@@ -4,7 +4,7 @@
 var List = require("bs-platform/lib/js/list.js");
 var $$Array = require("bs-platform/lib/js/array.js");
 var React = require("react");
-var ReasonReact = require("reason-react/lib/js/src/ReasonReact.js");
+var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Row$ReactTemplate = require("./Row.bs.js");
 
 var component = ReasonReact.statelessComponent("Page");

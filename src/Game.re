@@ -65,21 +65,21 @@ let make = (_) => {
   reducer: (action: action, state: state) =>
     switch (action) {
     | ToggleField((row: int), (col: int)) =>
-      switch(state.gameState) {
-      | Playing => {
-        switch (state.intervalId^) {
-          | Some(id) =>
-            ReasonReact.UpdateWithSideEffects(
-              {...state, 
-                gameState: Paused,
-                grid: toggleField(row, col, state.grid)
-              },
-              ((_) => Js.Global.clearInterval(id)),
-            )
-          | None => ReasonReact.Update(initialState)
-          }
-      }
-      | Paused => ReasonReact.Update({...state, grid: toggleField(row, col, state.grid)})
+      switch (state.intervalId^) {
+      | Some(id) =>
+        ReasonReact.UpdateWithSideEffects(
+          {
+            ...state,
+            gameState: Paused,
+            grid: toggleField(row, col, state.grid),
+          },
+          ((_) => Js.Global.clearInterval(id)),
+        )
+      | None =>
+        ReasonReact.Update({
+          ...state,
+          grid: toggleField(row, col, state.grid),
+        })
       }
     | NextFrame =>
       ReasonReact.Update({...state, grid: Utils.calcNextState(state.grid)})
@@ -117,6 +117,15 @@ let make = (_) => {
       <button onClick=((_) => send(TogglePlay))>
         ((state.gameState === Playing ? "Pause" : "Play") |> Utils.toString)
       </button>
+      (
+        switch (state.gameState) {
+        | Playing => ReasonReact.null
+        | _ =>
+          <button onClick=((_) => send(NextFrame))>
+            ("Next" |> Utils.toString)
+          </button>
+        }
+      )
       <button onClick=((_) => send(Clear))>
         ("Reset" |> Utils.toString)
       </button>

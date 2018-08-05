@@ -5,7 +5,7 @@ var List = require("bs-platform/lib/js/list.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
-var ReasonReact = require("reason-react/lib/js/src/ReasonReact.js");
+var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
 var Grid$ReactTemplate = require("./Grid.bs.js");
 var Utils$ReactTemplate = require("./Utils.bs.js");
@@ -371,6 +371,7 @@ function make() {
               var send = param[/* send */3];
               var state = param[/* state */1];
               var match = state[/* gameState */1] === /* Playing */0;
+              var match$1 = state[/* gameState */1];
               return React.createElement("div", {
                           className: "game"
                         }, ReasonReact.element(undefined, undefined, Grid$ReactTemplate.make(state[/* grid */0], (function (row, col) {
@@ -382,7 +383,11 @@ function make() {
                               onClick: (function () {
                                   return Curry._1(send, /* TogglePlay */1);
                                 })
-                            }, Utils$ReactTemplate.toString(match ? "Pause" : "Play")), React.createElement("button", {
+                            }, Utils$ReactTemplate.toString(match ? "Pause" : "Play")), match$1 ? React.createElement("button", {
+                                onClick: (function () {
+                                    return Curry._1(send, /* NextFrame */0);
+                                  })
+                              }, Utils$ReactTemplate.toString("Next")) : null, React.createElement("button", {
                               onClick: (function () {
                                   return Curry._1(send, /* Clear */2);
                                 })
@@ -447,31 +452,26 @@ function make() {
               } else {
                 var col = action[1];
                 var row = action[0];
-                var match$2 = state[/* gameState */1];
-                if (match$2) {
+                var match$2 = state[/* intervalId */2][0];
+                if (match$2 !== undefined) {
+                  var id$1 = Js_primitive.valFromOption(match$2);
+                  return /* UpdateWithSideEffects */Block.__(2, [
+                            /* record */[
+                              /* grid */toggleField(row, col, state[/* grid */0]),
+                              /* gameState : Paused */1,
+                              /* intervalId */state[/* intervalId */2]
+                            ],
+                            (function () {
+                                clearInterval(id$1);
+                                return /* () */0;
+                              })
+                          ]);
+                } else {
                   return /* Update */Block.__(0, [/* record */[
                               /* grid */toggleField(row, col, state[/* grid */0]),
                               /* gameState */state[/* gameState */1],
                               /* intervalId */state[/* intervalId */2]
                             ]]);
-                } else {
-                  var match$3 = state[/* intervalId */2][0];
-                  if (match$3 !== undefined) {
-                    var id$1 = Js_primitive.valFromOption(match$3);
-                    return /* UpdateWithSideEffects */Block.__(2, [
-                              /* record */[
-                                /* grid */toggleField(row, col, state[/* grid */0]),
-                                /* gameState : Paused */1,
-                                /* intervalId */state[/* intervalId */2]
-                              ],
-                              (function () {
-                                  clearInterval(id$1);
-                                  return /* () */0;
-                                })
-                            ]);
-                  } else {
-                    return /* Update */Block.__(0, [initialState]);
-                  }
                 }
               }
             }),

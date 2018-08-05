@@ -28,7 +28,9 @@
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
+    "bs-enzyme": "^0.4.0",
     "bs-platform": "^4.0.2",
+    "enzyme-adapter-react-16": "^1.1.1",
     "webpack": "^4.16.3",
     "webpack-cli": "^2.1.5"
   }

@@ -29,8 +29,14 @@ describe("toggleField", () => {
 });
 
 describe("clearGrid", () => {
-  test("some", () => {
-    expect(true) |> toBe(true)
+  test("clear", () => {
+    let grid = testGrid |> clearGrid;
+    let totalAlive = grid |> Array.of_list |> Js.Array.reduce((total, row) => {      
+      let aliveInRow = row |> Array.of_list |> Js.Array.filter(p => p === Alive) |> Array.length;      
+      total + aliveInRow;
+    }, 0);
+    
+    expect(totalAlive) |> toBe(0)
   });
 });
 

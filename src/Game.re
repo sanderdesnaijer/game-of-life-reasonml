@@ -42,15 +42,8 @@ let clearGrid = (grid: grid) : grid =>
   grid
   |> List.map((row: row) =>
        row
-       |> List.map((value: field) =>
-            switch (value) {
-            | Dead => Dead
-            | Alive => Dead
-            }
-          )
+       |> List.map((_) => Dead)
      );
-
-
 /*
   Rules of Game of Life:
   Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.

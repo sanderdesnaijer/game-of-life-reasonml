@@ -5,7 +5,9 @@
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test2": "jest Game --watch",
+    "test3": "jest Game --coverage",
     "webpack": "webpack -w",
     "webpack:production": "NODE_ENV=production webpack"
   },
